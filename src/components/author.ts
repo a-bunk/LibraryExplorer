@@ -36,7 +36,7 @@ export class Author {
             console.log("Geburtsjahr: " + this.birthyear);
         }
         if (this.keyWords !== undefined) {
-            var keywordsOutput: string = "Schlagwörter: ";
+            let keywordsOutput: string = "Schlagwörter: ";
             for (let i = 0; i < this.keyWords.length; i++) {
                 keywordsOutput = keywordsOutput + this.keyWords[i];
             }

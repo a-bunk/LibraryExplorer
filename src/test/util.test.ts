@@ -10,8 +10,8 @@ describe('testet concatQueryString', () => {
 
 describe('testet stringToDate', () => {
     test ('richtiges Datum', () => {
-        var dateTest : Date = new Date("1976-03-13");
-        var testResult = formatStringToDate("13.03.1976");
+        const dateTest : Date = new Date("1976-03-13");
+        const testResult = formatStringToDate("13.03.1976");
         expect(testResult).not.toBeUndefined();
         if (testResult !== undefined){
             expect(testResult.getFullYear()).toBe(dateTest.getFullYear());

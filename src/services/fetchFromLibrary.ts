@@ -7,11 +7,9 @@ export const queryOpenLibrary = async (queryString: string, resultObject: Object
         if (resultObject instanceof AuthorQueryResult) {
             returnValue = new AuthorQueryResult()
         }
-        ;
         if (resultObject instanceof BookQueryResult) {
             returnValue = new BookQueryResult()
         }
-        ;
 
         if (queryString.length === 0) {
             return returnValue;
@@ -20,8 +18,7 @@ export const queryOpenLibrary = async (queryString: string, resultObject: Object
         const result = await respons.json();
         console.debug("result", JSON.stringify(result, null, 2));
 
-        const dataObject = Object.assign(resultObject, result);
-        return dataObject;
+        return Object.assign(resultObject, result);
     } catch (e) {
         console.error("Fail", e)
         return returnValue;

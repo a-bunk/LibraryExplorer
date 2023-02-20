@@ -23,7 +23,7 @@ const RESULT_AUTHOR = {"numFound": 1,
 ]}
 
 
-let mockFetch = jest.fn(() => Promise.resolve({
+const mockFetch = jest.fn(() => Promise.resolve({
     json: () => Promise.resolve( RESULT_AUTHOR  ),
 }));
 
