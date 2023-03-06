@@ -2,7 +2,7 @@ import {concatQueryString} from "./util/util";
 import {AuthorQueryResult} from "./components/authorQueryResult";
 import {Author} from "./components/author";
 import {BookQueryResult} from "./components/bookQueryResult";
-import {inputAuthorLastName, inputAuthorName, readFromConsole} from "./services/readingService";
+import {readFromConsole} from "./services/readingService";
 import {setAuthor, setBooksForAuthor} from "./services/mapperService";
 import {queryOpenLibrary} from "./services/fetchFromLibrary";
 
@@ -35,25 +35,27 @@ let counter : number;
 /**
  * Sucht den Key für den eigegebenen Namen
  * @param authorQueryResult
+ * @param inputName
  */
-async function checkNameAndGetKey(authorQueryResult :AuthorQueryResult) {
+async function checkNameAndGetKey(authorQueryResult :AuthorQueryResult, inputName: string) {
         for (let i = 0; i < authorQueryResult.docs.length; i++) {
             const nameTest = authorQueryResult.docs[i].name;
             console.log(authorQueryResult.docs[i].name);
-            if (nameTest === inputAuthorName) {
+            if (nameTest === inputName) {
                 keyDetails = authorQueryResult.docs[i].key;
-                setAuthor(authorQueryResult, i);
+                setAuthor(authorQueryResult, i, nameTest);
                 console.log(keyDetails);
                 return;
             }
         }
 }
 
-async function findAutorName() {
+async function findAuthorName() {
     // Pipeline
+    let inputAuthorLastName;
     while (keyDetails === undefined) {
-        await readFromConsole("Bitte gib den Nachnamen des gesuchten Autors ein: ", "LASTNAME");
-        const authorQueryResult: AuthorQueryResult | BookQueryResult = await queryOpenLibrary(concatQueryString(query, inputAuthorLastName), new AuthorQueryResult());
+        inputAuthorLastName = await readFromConsole("Bitte gib den Nachnamen des gesuchten Autors ein: ");
+        const authorQueryResult = await queryOpenLibrary(concatQueryString(query, inputAuthorLastName), new AuthorQueryResult());
 
         if (authorQueryResult instanceof AuthorQueryResult) {
             counter = authorQueryResult.numFound as number;
@@ -69,14 +71,14 @@ async function findAutorName() {
                 }
                 case CounterResults.ONERESULT: {
                     keyDetails = authorQueryResult.docs[0].key
-                    setAuthor(authorQueryResult, 0);
+                    setAuthor(authorQueryResult, 0, inputAuthorLastName);
                     break;
                 }
                 default : {
                     console.log("Es wurden mehrere Datensätze gefunden!");
-                    await readFromConsole("Bitte geben Sie den Namen detaillierter ein: ", "FULLNAME")
+                    inputAuthorLastName = await readFromConsole("Bitte geben Sie den Namen detaillierter ein: ");
                     // Liste durchgehen und mit ID abgleichen
-                    await checkNameAndGetKey(authorQueryResult);
+                    await checkNameAndGetKey(authorQueryResult, inputAuthorLastName);
                     if (keyDetails === undefined) {
                         console.log("Der vollständige Name wurde nicht gefunden. Wir beginnen noch einmal von Beginn an!");
                     }
@@ -92,8 +94,8 @@ async function findAutorName() {
 
 async function fuehreAbfragenAus(){
     try {
-        await findAutorName();
-        const detailsAuthor : AuthorQueryResult|BookQueryResult = await queryOpenLibrary(concatQueryString(queryDetailsAuthor,keyDetails), new BookQueryResult());
+        await findAuthorName();
+        const detailsAuthor  = await queryOpenLibrary(concatQueryString(queryDetailsAuthor,keyDetails), new BookQueryResult());
         if (detailsAuthor instanceof BookQueryResult) {
             setBooksForAuthor(detailsAuthor)
         }

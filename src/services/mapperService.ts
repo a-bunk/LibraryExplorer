@@ -2,13 +2,12 @@ import {BookQueryResult} from "../components/bookQueryResult";
 import {Books} from "../components/books";
 import {Author} from "../components/author";
 import {AuthorQueryResult} from "../components/authorQueryResult";
-import {inputAuthorName} from "./readingService";
 import {formatStringToDate} from "../util/util";
 
-export function setAuthor(queryResults: AuthorQueryResult, i: number) {
+export function setAuthor(queryResults: AuthorQueryResult, i: number, authorName : string) {
     const author = Author.getInstance();
 
-    author.autorName = inputAuthorName;
+    author.authorName = authorName;
     author.topWork = queryResults.docs[i].top_work;
     author.keyWords = queryResults.docs[i].top_subjects;
 

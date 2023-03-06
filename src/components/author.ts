@@ -1,7 +1,7 @@
 export class Author {
 
     private static instance:Author;
-    autorName!: string;
+    authorName!: string;
     anzahlEintraege!: number;
 
     topWork!: string;
@@ -28,7 +28,7 @@ export class Author {
     printAuthor() {
         console.log("------------------------------------------------------------------------------------------------");
         console.log("AUTOR")
-        console.log("Autor: " + this.autorName);
+        console.log("Autor: " + this.authorName);
         if (this.birthdate !== undefined){
             console.log("Geburtsdatum: " + this.birthdate.getDate().toString() + "." + (this.birthdate.getMonth() + 1).toString() + "." + this.birthdate.getFullYear());
         }
