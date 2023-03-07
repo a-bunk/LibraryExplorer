@@ -1,6 +1,8 @@
-import {describe, jest, it, expect} from "@jest/globals";
-import { queryOpenLibrary} from "../services/fetchFromLibrary";
+import {describe,  it, expect} from "@jest/globals";
+import {queryOpenLibrary} from "../services/fetchFromLibrary";
 import {BookQueryResult} from "../components/bookQueryResult";
+import {AuthorQueryResult} from "../components/authorQueryResult";
+
 
 
 const RESULT_AUTHOR = {
@@ -9,7 +11,7 @@ const RESULT_AUTHOR = {
     "numFoundExact": true,
     "docs": [
         {
-            "key": "OL8263705A",
+            "key": "keyTest",
             "type": "author",
             "name": "Helmholtz-Zentrum Potsdam Helmholtz-Zentrum Potsdam - Deutsches GeoForschungsZentrum GFZ",
             "top_work": "Fokus : Erde : Focus",
@@ -71,78 +73,51 @@ const queryString = 'http://openlibrary.org/search/authors.json?q=gfz';
 const queryBook = "http://openlibrary.org/authors/OL8263705A/works.json";
 
 
-let mockFetch = jest.mocked(queryOpenLibrary);
+describe('testet Abfrage von openLibrary',
+    () => {
 
-jest.mock("../services/fetchFromLibrary");
+        global.fetch = jest.fn() as jest.Mock;
 
-
-describe('testet Abfrage von openLibrary', () => {
-/*
-    global.fetch = jest.fn() as jest.Mock;
-    let mockFetch  = jest.fn(() => Promise.resolve({
-            json: () => Promise.resolve(RESULT_AUTHOR),
-        })
-    );
-//mockFetch.mock(fetch);
-
-    jest.mock("../services/fetchFromLibrary");
+        beforeEach(() => {
+            jest.mocked(fetch).mockClear();
+        });
 
 
-
-    it('Test Author ', async() => {
-
-
-
-
-        const authorTest = await queryOpenLibrary(queryString, AuthorQueryResult);
-        expect(jest.mocked(mockFetch).mock.calls.length).toBe(0);
-
-        console.log(authorTest);
-        //expect(authorTest).toBeDefined();
-        let test: AuthorQueryResult;
-        test = authorTest as AuthorQueryResult;
-        console.log(test);
-        console.log ("if");
-        //expect(test.docs[0].key).toBe("blub");
+        it('Test Author ', async () => {
+            jest.mocked(fetch).mockImplementation((): Promise<any> => {
+                return Promise.resolve({
+                    json() {
+                        return Promise.resolve(RESULT_AUTHOR)
+                    }
+                })
+            });
 
 
-    });
-*/
-    //let mockFetch = jest.mocked(queryOpenLibrary);
+            const authorTest = await queryOpenLibrary(queryString, AuthorQueryResult);
+            expect(jest.mocked(fetch).mock.calls.length).toBe(1);
+            expect(authorTest).toBeDefined();
 
-    //jest.mock("../services/fetchFromLibrary");
+            let test: AuthorQueryResult;
+            test = authorTest as AuthorQueryResult;
+
+            expect(test.docs[0].key).toBe("keyTest");
+
+        });
 
     it('Test Book ', async() => {
-        /*
-        jest.mocked(mockFetch).mockImplementation((): Promise<any> => {
+
+        jest.mocked(fetch).mockImplementation((): Promise<any> => {
             return Promise.resolve({
-                text() {
-                    return Promise.resolve(JSON.stringify(RESULT_BOOK))}})});
-*/
+                json() {
+                    return Promise.resolve(RESULT_BOOK)}})});
 
-        jest.mocked(mockFetch).mockImplementation((): Promise<any> => {
-                return Promise.resolve(JSON.stringify(RESULT_BOOK))});
+                const bookTest = await queryOpenLibrary(queryBook, BookQueryResult);
+                expect(jest.mocked(fetch).mock.calls.length).toBe(1);
+                const bqR : BookQueryResult = bookTest as BookQueryResult;
+                expect(bqR).toBeDefined();
+                expect(bqR.entries[0].title).toBe("Fokus : Erde : Focus")
+            });
 
-        /*
-        jest.mocked(mockFetch).mockImplementation(() => {
-            return Promise.resolve(JSON.stringify(RESULT_BOOK));
-        });
-         */
-
-        const bookTest = await queryOpenLibrary(queryBook, BookQueryResult);
-        console.debug(bookTest);
-        expect(jest.mocked(mockFetch).mock.calls.length).toBe(1);
-        const bqR : BookQueryResult = bookTest as BookQueryResult;
-        console.debug(bqR);
-        expect(bqR).toBeDefined();
-        if (bqR instanceof BookQueryResult) {
-            console.log("bookTest is instance of queryResult");
-            if (expect(bqR) instanceof BookQueryResult) {
-                expect(bqR.entries[0].title).toBe("OL8263705A")
-            }
-        }
     });
-
-});
 
 

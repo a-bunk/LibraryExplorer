@@ -1,7 +1,7 @@
 import {AuthorQueryResult} from "../components/authorQueryResult";
 import {BookQueryResult} from "../components/bookQueryResult";
 
-export async function getOpenLibrary(queryString: string) {
+export async function getOpenLibrary(queryString: string):Promise<string> {
     const respons = await fetch(queryString);
     const result = await respons.json();
     console.debug("result", JSON.stringify(result, null, 2));

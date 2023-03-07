@@ -6,17 +6,6 @@ import {readFromConsole} from "./services/readingService";
 import {setAuthor, setBooksForAuthor} from "./services/mapperService";
 import {queryOpenLibrary} from "./services/fetchFromLibrary";
 
-
-//console.log('http://openlibrary.org/authors/OL4064586A/works.json');
-/*
-var sucheButton: HTMLButtonElement;
-sucheButton = document.getElementById("autorbutton") as HTMLButtonElement;
-//sucheButton.addEventListener()
-
-var inputEingabeElement : HTMLInputElement;
-inputEingabeElement = document.getElementById("autortext") as HTMLInputElement;
-*/
-
 const query : string = 'http://openlibrary.org/search/authors.json?q={1}';
 const queryDetailsAuthor : string  = 'http://openlibrary.org/authors/{1}/works.json';
 let keyDetails : string;
